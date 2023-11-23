@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Sale>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h3>Sales</h3>
+        <div class="d-flex justify-content-end mb-1">
+            <a class="btn btn-primary btn-sm" asp-action="Create" asp-controller="Sales">Add New</a>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    
+                    <th>Date</th>
+                    <th>Dress</th>
+                    <th>Quantity</th>
+                    
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                       
+                        <td>@p.Date?.ToString("yyyy-MM-dd")</td>
+                        <td>@p.Dress?.DressName</td>
+                        <td>@p.Quantity</td>
+                        <td>
+                            <a class="btn btn-success btn-sm" asp-action="Edit" asp-controller="Sales" asp-route-id="@p.SaleId">Edit</a>
+                            <button data-pk="@p.SaleId" type="button" class="btn btn-danger btn-sm del">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section scripts
+    {
+    <script src="~/libs/jquery/jquery.js"></script>
+    <script>
+        $(".del").click(function () {
+            if (!confirm('Are you sure to delete?')) return;
+            var btn = $(this);
+            let id = $(this).data("pk");
+            $.ajax({
+                type: "post",
+                url: "/Sales/Delete/" + id,
+                dataType: "json",
+                success: r => {
+                    if (r.success == true) {
+                        btn.closest("tr").remove();
+                    }
+                }
+            })
+        })
+    </script>
+}
+
+
